@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyBooker - Flight Booking</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .flight-card:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-4">
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                </svg>
+                <span class="text-2xl font-bold">SkyBooker</span>
+            </div>
+            <nav class="space-x-4">
+                <button class="text-gray-600 hover:text-blue-500">Help</button>
+                <button class="text-gray-600 hover:text-blue-500">Sign In</button>
+            </nav>
+        </header>
+
+        <!-- Search Form -->
+        <div class="step active" id="searchStep">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-6">Search Flights</h2>
+                
+                <!-- Trip Type Selection -->
+                <div class="flex space-x-4 mb-6">
+                    <button class="trip-type-btn px-4 py-2 rounded-full bg-blue-500 text-white" data-type="oneWay">One-way</button>
+                    <button class="trip-type-btn px-4 py-2 rounded-full bg-gray-100" data-type="roundTrip">Round-trip</button>
+                </div>
+
+                <!-- Search Form -->
+                <form id="searchForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">From</label>
+                            <input type="text" placeholder="Enter city or airport" class="w-full p-2 border rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">To</label>
+                            <input type="text" placeholder="Enter city or airport" class="w-full p-2 border rounded-md">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Departure Date</label>
+                            <input type="date" class="w-full p-2 border rounded-md">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Passengers</label>
+                            <select class="w-full p-2 border rounded-md">
+                                <option>1 Adult</option>
+                                <option>2 Adults</option>
+                                <option>3 Adults</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition-colors">
+                        Search Flights
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        <div class="step" id="resultsStep">
+            <div class="mb-6 flex justify-between items-center">
+                <h2 class="text-xl font-semibold">Search Results</h2>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Sort by:</span>
+                    <select class="p-2 border rounded-md" id="sortSelect">
+                        <option value="price">Price: Low to High</option>
+                        <option value="duration">Duration: Shortest</option>
+                        <option value="departure">Departure: Earliest</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="flightResults" class="space-y-4">
+                <!-- Flight cards will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Payment Step -->
+        <div class="step" id="paymentStep">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-bold mb-6">Payment Details</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h3 class="font-semibold">Payment Options</h3>
+                        <div class="space-y-2">
+                            <button class="w-full flex items-center justify-between p-4 border rounded-md hover:border-blue-500">
+                                <span>Credit/Debit Card</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button class="w-full flex items-center justify-between p-4 border rounded-md hover:border-blue-500">
+                                <span>Net Banking</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h3 class="font-semibold">Price Summary</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span>Base Fare</span>
+                                <span>₹8,000</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Taxes & Fees</span>
+                                <span>₹1,234</span>
+                            </div>
+                            <div class="border-t pt-2 flex justify-between font-bold">
+                                <span>Total Amount</span>
+                                <span>₹9,234</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Trip type selection
+        const tripTypeBtns = document.querySelectorAll('.trip-type-btn');
+        tripTypeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tripTypeBtns.forEach(b => b.classList.remove('bg-blue-500', 'text-white'));
+                tripTypeBtns.forEach(b => b.classList.add('bg-gray-100'));
+                btn.classList.remove('bg-gray-100');
+                btn.classList.add('bg-blue-500', 'text-white');
+            });
+        });
+
+        // Search form submission
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showStep('resultsStep');
+            populateFlightResults();
+        });
+
+        // Show specific step
+        function showStep(stepId) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        // Populate flight results
+        function populateFlightResults() {
+            const resultsContainer = document.getElementById('flightResults');
+            const flights = [
+                {
+                    airline: 'Sky Airlines',
+                    departure: '06:45',
+                    arrival: '12:45',
+                    price: 8496,
+                    duration: '6h 00m',
+                    stops: '1 Stop'
+                },
+                {
+                    airline: 'Ocean Air',
+                    departure: '12:30',
+                    arrival: '17:30',
+                    price: 9234,
+                    duration: '5h 00m',
+                    stops: 'Non-stop'
+                }
+            ];
+
+            resultsContainer.innerHTML = flights.map(flight => `
+                <div class="flight-card bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-lg font-semibold">${flight.airline}</div>
+                            <div class="flex items-center space-x-4">
+                                <div class="text-xl">${flight.departure}</div>
+                                <div class="text-gray-400">→</div>
+                                <div class="text-xl">${flight.arrival}</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <div class="text-2xl font-bold">₹${flight.price}</div>
+                                <div class="text-sm text-gray-500">${flight.stops}</div>
+                            </div>
+                            <button onclick="showStep('paymentStep')" 
+                                    class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Sort functionality
+        document.getElementById('sortSelect').addEventListener('change', (e) => {
+            // Add sorting logic here
+            console.log('Sorting by:', e.target.value);
+        });
+    </script>
+</body>
+</html>
